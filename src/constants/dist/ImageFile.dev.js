@@ -1,0 +1,15 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+var _default = {
+  next: require('../assets/images/next.png'),
+  home: require('../assets/images/home.png'),
+  task: require('../assets/images/checklist.png'),
+  setting: require('../assets/images/settings.png'),
+  profile: require('../assets/images/profile.png')
+};
+exports["default"] = _default;
+//# sourceMappingURL=ImageFile.dev.js.map
