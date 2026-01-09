@@ -6,7 +6,6 @@ import ImageFile from '../constants/ImageFile';
 import { colors } from '../styles/colors';
 
 const Bottom = createNativeBottomTabNavigator();
-console.log('image', ImageFile.next);
 
 const BottomStack = () => {
   return (

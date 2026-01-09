@@ -9,7 +9,8 @@ var _default = {
   home: require('../assets/images/home.png'),
   task: require('../assets/images/checklist.png'),
   setting: require('../assets/images/settings.png'),
-  profile: require('../assets/images/profile.png')
+  profile: require('../assets/images/profile.png'),
+  logout: require('../assets/images/logout.png')
 };
 exports["default"] = _default;
 //# sourceMappingURL=ImageFile.dev.js.map

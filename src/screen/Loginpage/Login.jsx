@@ -6,20 +6,49 @@ import { TextInput } from 'react-native-paper';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { AuthContext } from '../../navigation/Routes';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const schema = yup.object({
-  email: yup
-    .string()
-    .email('Enter the Valid Email')
-    .max(45, 'Email is Too lengthy')
-    .required('Email is required'),
+  username: yup.string().required('Username is required'),
+  // email: yup
+  //   .string()
+  //   .email('Enter the Valid Email')
+  //   .max(45, 'Email is Too lengthy')
+  //   .required('Email is required'),
   password: yup
     .string()
     .max(12, 'Password is Too lengthy')
     .required('Password is required'),
 });
+//https:TaskmanagerAPI.coolboiler.com/api/users/login
 const Login = () => {
   const { setIsAuth } = useContext(AuthContext);
+
+  const handleLogin = async values => {
+    try {
+      const response = await axios.post(
+        'https://TaskmanagerAPI.coolboiler.com/api/users/login',
+        {
+          userName: values.username, // ✅ IMPORTANT
+          password: values.password,
+        },
+      );
+      const tokenData = await AsyncStorage.setItem(
+        'tokens',
+        JSON.stringify(response.data.data),
+      );
+      if (tokenData !== null) {
+        setIsAuth(true);
+      }
+    } catch (error) {
+      console.error(
+        error.response?.status,
+        error.response?.data || error.message,
+      );
+    }
+  };
+
   return (
     <WrapperContainer>
       <View style={styles.centerBlock}>
@@ -28,18 +57,12 @@ const Login = () => {
         </Text>
         <Formik
           initialValues={{
-            email: '',
+            username: '',
             password: '',
           }}
           validationSchema={schema}
           onSubmit={(values, { resetForm }) => {
-            if (
-              values.email === 'Admin@gmail.com' &&
-              values.password === 'Admin@123'
-            ) {
-              Alert.alert('values', JSON.stringify(values));
-              setIsAuth(true);
-            }
+            handleLogin(values);
             resetForm();
           }}
         >
@@ -53,15 +76,21 @@ const Login = () => {
             touched,
           }) => (
             <View style={{ width: '90%' }}>
-              <TextInput
+              {/* <TextInput
                 label="Email"
                 mode="outlined"
                 value={values.email}
                 onChangeText={txt => setFieldValue('email', txt)}
+              /> */}
+              <TextInput
+                label="Username"
+                mode="outlined"
+                value={values.username}
+                onChangeText={txt => setFieldValue('username', txt)}
               />
-              {errors.email && touched.email && (
+              {errors.username && touched.username && (
                 <Text style={{ color: 'red', marginTop: 10 }}>
-                  {errors.email}
+                  {errors.usernamevasanth}
                 </Text>
               )}
               <TextInput
