@@ -8,16 +8,21 @@ import axios from 'axios';
 
 const Project = () => {
   const navigation = useNavigation();
+  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [pageSize] = useState(5); // constant
-  const [pageNumber, setPageNumber] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [pageNumber, setPageNumber] = useState(0);
   const [result, setResult] = useState([]);
+  const [pageSize] = useState(5); // constant
 
   const getProject = async () => {
+    if (loading || !hasMore) return;
+
     setLoading(true);
     try {
+      const nextPage = pageNumber + 1;
       const response = await axios.get(
-        `https://TaskmanagerAPI.coolboiler.com/api/projects?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+        `https://TaskmanagerAPI.coolboiler.com/api/projects?PageNumber=${nextPage}&PageSize=${pageSize}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -25,17 +30,22 @@ const Project = () => {
         },
       );
       console.log(response.data);
+
       const newData = response.data.data || [];
       setResult(prev => [...prev, ...newData]);
-      // setResult(response.data.data);
+      setPageNumber(nextPage); // ✅ THIS WAS MISSING
+      if (newData.length < pageSize) {
+        setHasMore(false); // 🚫 stop further calls
+      }
     } catch (error) {
     } finally {
       setLoading(false);
+      setInitialLoading(false);
     }
   };
   useEffect(() => {
     getProject();
-  }, [pageNumber]);
+  }, []);
 
   const footerView = () => {
     return (
@@ -47,13 +57,9 @@ const Project = () => {
           marginTop: 20,
         }}
       >
-        <Pressable
-          onPress={() => {
-            setPageNumber(prev => prev + 1);
-          }}
-        >
+        {/* <Pressable>
           <Text>See more</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     );
   };
@@ -95,9 +101,9 @@ const Project = () => {
         </Pressable>
       </View>
       <View style={{ margin: 10, paddingTop: 30 }}>
-        {loading ? (
+        {initialLoading ? (
           <FlatList
-            data={[1, 2, 3, 4, 5]}
+            data={[1, 2, 3, 4, 5, 6, 7, 8]}
             renderItem={() => <SkeletonCard />}
             contentContainerStyle={{ padding: 20 }}
           />
@@ -151,8 +157,9 @@ const Project = () => {
                 </View>
               </View>
             )}
+            onEndReached={getProject}
+            onEndReachedThreshold={0.5}
             ListEmptyComponent={<Text>NO PROJECT FOUND</Text>}
-            ListFooterComponent={footerView}
           />
         ) : (
           <Text>No Project Found</Text>

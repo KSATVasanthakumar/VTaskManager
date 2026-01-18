@@ -5,6 +5,7 @@ import { colors } from '../../styles/colors';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import { bool } from 'yup';
+import { useNavigation } from '@react-navigation/native';
 // ProjectName :name
 // project description : description
 // startdate:startDate,
@@ -18,9 +19,11 @@ const CreateProject = () => {
   const [projectstatus, setProjectstatus] = useState('');
   const [startdate, setstartDate] = useState(today);
   const [enddate, setendDate] = useState(today);
+  const [isdisabled, setIsdisabled] = useState(false);
   const [error, setError] = useState('');
   const [minStartDate, setMinStartDate] = useState(today);
 
+  const navigation = useNavigation();
   useEffect(() => {
     const date = new Date();
     date.setFullYear(date.getFullYear() - 10);
@@ -58,27 +61,28 @@ const CreateProject = () => {
   //   };
   // }
 
-  function isvalidation() {
+  const isvalidation = () => {
     if (!projectname || projectname.length <= 3) {
       setError('Project Name is not Valid');
-      return true;
+      return false;
     }
     if (!projectdescription || projectdescription.length <= 10) {
       setError('Project Description is not Valid');
-      return true;
+      return false;
     }
     if (!projectstatus || projectstatus.length <= 5) {
       setError('Project Status is not Valid');
-      return true;
+      return false;
     }
     setError('');
-    return false;
-  }
+    return true;
+  };
 
   const handleCreateProject = async () => {
     try {
       if (!isvalidation()) return;
 
+      setIsdisabled(true);
       const payload = {
         name: projectname,
         description: projectdescription,
@@ -96,7 +100,8 @@ const CreateProject = () => {
           },
         },
       );
-      console.log(response.data);
+      setIsdisabled(false);
+      navigation.navigate('ProjectPage');
     } catch (error) {
       setError('Create project failed');
     }
@@ -179,16 +184,8 @@ const CreateProject = () => {
         </View>
         <View style={{ alignItems: 'center' }}>
           <Pressable
-            style={{
-              padding: 10,
-              backgroundColor: colors.ACCENT,
-              marginTop: 10,
-              width: 200,
-              height: 50,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 20,
-            }}
+            style={[styles.button, isdisabled && styles.disabled]}
+            isdisabled={isdisabled}
             onPress={() => handleCreateProject()}
           >
             <Text
@@ -198,7 +195,7 @@ const CreateProject = () => {
                 fontWeight: '500',
               }}
             >
-              Create Project
+              {isdisabled ? 'Creating....' : 'Create Project'}
             </Text>
           </Pressable>
         </View>
@@ -208,6 +205,16 @@ const CreateProject = () => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    padding: 10,
+    backgroundColor: colors.ACCENT,
+    marginTop: 10,
+    width: 200,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+  },
   txtInput: {
     width: 300,
     height: 50,
@@ -221,6 +228,9 @@ const styles = StyleSheet.create({
     color: colors.ERROR,
     fontSize: 15,
     marginBottom: 10,
+  },
+  disabled: {
+    opacity: 0.6,
   },
 });
 
