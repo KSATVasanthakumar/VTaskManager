@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import WrapperContainer from '../../components/WrapperContainer';
 
 const Settings = () => {
   return (
-    <View>
-      <Text>Settings</Text>
-    </View>
-  )
-}
+    <WrapperContainer>
+      <View>
+        <Text>Settings</Text>
+      </View>
+    </WrapperContainer>
+  );
+};
 
-export default Settings
+export default Settings;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

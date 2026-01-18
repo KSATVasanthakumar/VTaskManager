@@ -4,6 +4,7 @@ import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/un
 import { Homepage, Profilepage, Settingspage } from '../screen';
 import ImageFile from '../constants/ImageFile';
 import { colors } from '../styles/colors';
+import ProjectStack from '../navigation/ProjectStack';
 
 const Bottom = createNativeBottomTabNavigator();
 
@@ -50,6 +51,19 @@ const BottomStack = () => {
           tabBarIcon: {
             type: 'image',
             source: ImageFile.setting,
+            tinted: true,
+          },
+        }}
+      />
+      <Bottom.Screen
+        name="Project"
+        component={ProjectStack}
+        options={{
+          tabBarLabel: '',
+          tabBarActiveTintColor: colors.ACCENT,
+          tabBarIcon: {
+            type: 'image',
+            source: ImageFile.project,
             tinted: true,
           },
         }}
