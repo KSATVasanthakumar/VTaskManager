@@ -8,4 +8,9 @@ export default {
   task: require('../assets/images/task.png'),
   project: require('../assets/images/project.png'),
   back: require('../assets/images/left.png'),
+  more: require('../assets/images/more.png'),
+  error: require('../assets/images/Error.png'),
+  info: require('../assets/images/Info.png'),
+  success: require('../assets/images/Success.png'),
+  warning: require('../assets/images/Warning.png'),
 };

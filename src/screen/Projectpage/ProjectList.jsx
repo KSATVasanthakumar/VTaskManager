@@ -14,55 +14,82 @@ const Project = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [result, setResult] = useState([]);
   const [pageSize] = useState(5); // constant
+  const [totalpage, setTotalPages] = useState(0);
+  const isFetchingRef = React.useRef(false);
+  const pageRef = React.useRef(0);
+  const hasMoreRef = React.useRef(true);
 
-  const getProject = async () => {
-    if (loading || !hasMore) return;
+  const getProject = React.useCallback(async () => {
+    if (isFetchingRef.current || !hasMoreRef.current) return;
 
+    isFetchingRef.current = true;
     setLoading(true);
+
     try {
-      const nextPage = pageNumber + 1;
+      const nextPage = pageRef.current + 1;
+
       const response = await axios.get(
         `https://TaskmanagerAPI.coolboiler.com/api/projects?PageNumber=${nextPage}&PageSize=${pageSize}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
       );
-      console.log(response.data);
 
-      const newData = response.data.data || [];
+      const newData = response.data?.data ?? [];
+      const totalPages = response.data?.totalPages ?? 0;
+
       setResult(prev => [...prev, ...newData]);
-      setPageNumber(nextPage); // ✅ THIS WAS MISSING
-      if (newData.length < pageSize) {
-        setHasMore(false); // 🚫 stop further calls
+
+      pageRef.current = nextPage;
+      setPageNumber(nextPage); // optional (for UI)
+      setTotalPages(totalPages);
+
+      if (nextPage >= totalPages) {
+        hasMoreRef.current = false;
+        setHasMore(false);
       }
     } catch (error) {
+      console.log(error);
     } finally {
+      isFetchingRef.current = false;
       setLoading(false);
       setInitialLoading(false);
     }
-  };
+  }, [pageSize]);
+
+  // const getProject = async () => {
+  //   if (loading || !hasMore) return;
+
+  //   setLoading(true);
+  //   try {
+  //     const nextPage = pageNumber + 1;
+
+  //     const response = await axios.get(
+  //       `https://TaskmanagerAPI.coolboiler.com/api/projects?PageNumber=${nextPage}&PageSize=${pageSize}`,
+  //       {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       },
+  //     );
+  //     console.log(response.data);
+  //     console.log('pagenumber', nextPage);
+  //     const newData = response.data.data || [];
+  //     const totalPagesFromApi = response.data?.totalPages ?? 0;
+  //     setTotalPages(totalPagesFromApi);
+  //     setPageNumber(nextPage); // ✅ THIS WAS MISSING
+  //     setResult(prev => [...prev, ...newData]);
+
+  //     if (nextPage >= totalPagesFromApi) {
+  //       setHasMore(false); // 🚫 stop further calls
+  //     }
+  //   } catch (error) {
+  //   } finally {
+  //     setLoading(false);
+  //     setInitialLoading(false);
+  //   }
+  // };
   useEffect(() => {
     getProject();
-  }, []);
+  }, [getProject]);
 
-  const footerView = () => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 20,
-        }}
-      >
-        {/* <Pressable>
-          <Text>See more</Text>
-        </Pressable> */}
-      </View>
-    );
-  };
   return (
     <WrapperContainer>
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -115,6 +142,7 @@ const Project = () => {
               marginTop: 20,
             }}
             data={result}
+            keyExtractor={item => item.id.toString()}
             renderItem={({ item }) => (
               <View
                 style={{
@@ -157,8 +185,9 @@ const Project = () => {
                 </View>
               </View>
             )}
-            onEndReached={getProject}
-            onEndReachedThreshold={0.5}
+            initialNumToRender={5}
+            onEndReached={hasMore ? getProject : null}
+            onEndReachedThreshold={0.3}
             ListEmptyComponent={<Text>NO PROJECT FOUND</Text>}
           />
         ) : (
@@ -170,5 +199,3 @@ const Project = () => {
 };
 
 export default Project;
-
-const styles = StyleSheet.create({});

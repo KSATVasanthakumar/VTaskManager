@@ -51,6 +51,30 @@ Object.defineProperty(exports, "EditProject", {
     return _EditProject["default"];
   }
 });
+Object.defineProperty(exports, "Morepage", {
+  enumerable: true,
+  get: function get() {
+    return _Morepage["default"];
+  }
+});
+Object.defineProperty(exports, "CreateUser", {
+  enumerable: true,
+  get: function get() {
+    return _CreateUser["default"];
+  }
+});
+Object.defineProperty(exports, "UserList", {
+  enumerable: true,
+  get: function get() {
+    return _UserList["default"];
+  }
+});
+Object.defineProperty(exports, "EditUser", {
+  enumerable: true,
+  get: function get() {
+    return _EditUser["default"];
+  }
+});
 
 var _Home = _interopRequireDefault(require("./Homepage/Home"));
 
@@ -67,6 +91,14 @@ var _ProjectList = _interopRequireDefault(require("./Projectpage/ProjectList"));
 var _CreateProject = _interopRequireDefault(require("./Projectpage/CreateProject"));
 
 var _EditProject = _interopRequireDefault(require("./Projectpage/EditProject"));
+
+var _Morepage = _interopRequireDefault(require("./Morepage/Morepage"));
+
+var _CreateUser = _interopRequireDefault(require("./Userpage/CreateUser"));
+
+var _UserList = _interopRequireDefault(require("./Userpage/UserList"));
+
+var _EditUser = _interopRequireDefault(require("./Userpage/EditUser"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 //# sourceMappingURL=index.dev.js.map

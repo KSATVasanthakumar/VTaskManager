@@ -14,7 +14,9 @@ var colors = {
   TEXTPRIMARY: '#FFFFFF',
   TEXTSECONDARY: '#CFCFE6',
   MAINBG: '#E3E3E3',
-  ERROR: '#FF2400'
+  ERROR: '#FF2400',
+  LIGHTRED: '#F58e95',
+  GREEN: '#0BB002'
 };
 exports.colors = colors;
 //# sourceMappingURL=colors.dev.js.map
